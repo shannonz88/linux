@@ -1488,6 +1488,7 @@ static int init_subsystems(void)
 	kvm_coproc_table_init();
 
 out:
+	hyp_cpu_pm_exit();
 	on_each_cpu(_kvm_arch_hardware_disable, NULL, 1);
 
 	return err;
@@ -1500,7 +1501,6 @@ static void teardown_hyp_mode(void)
 	free_hyp_pgds();
 	for_each_possible_cpu(cpu)
 		free_page(per_cpu(kvm_arm_hyp_stack_page, cpu));
-	hyp_cpu_pm_exit();
 }
 
 /**
@@ -1724,6 +1724,7 @@ out_err:
 void kvm_arch_exit(void)
 {
 	kvm_perf_teardown();
+	hyp_cpu_pm_exit();
 }
 
 static int arm_init(void)
