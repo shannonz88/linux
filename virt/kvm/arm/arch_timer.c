@@ -991,6 +991,19 @@ out_free_irq:
 	return err;
 }
 
+void kvm_timer_hyp_uninit(void)
+{
+	struct arch_timer_kvm_info *info = arch_timer_get_kvm_info();
+
+	cpuhp_remove_state(CPUHP_AP_KVM_ARM_TIMER_STARTING);
+	if (info->physical_irq > 0) {
+		on_each_cpu(disable_percpu_irq, (void *)host_ptimer_irq, 1);
+		free_percpu_irq(host_ptimer_irq, kvm_get_running_vcpus());
+	}
+	on_each_cpu(disable_percpu_irq, (void *)host_vtimer_irq, 1);
+	free_percpu_irq(host_vtimer_irq, kvm_get_running_vcpus());
+}
+
 void kvm_timer_vcpu_terminate(struct kvm_vcpu *vcpu)
 {
 	struct arch_timer_cpu *timer = vcpu_timer(vcpu);
