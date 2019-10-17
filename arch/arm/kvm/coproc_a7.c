@@ -34,9 +34,7 @@ static struct kvm_coproc_target_table a7_target_table = {
 	.num = ARRAY_SIZE(a7_regs),
 };
 
-static int __init coproc_a7_init(void)
+void coproc_a7_init(void)
 {
 	kvm_register_target_coproc_table(&a7_target_table);
-	return 0;
 }
-late_initcall(coproc_a7_init);

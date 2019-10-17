@@ -2738,6 +2738,7 @@ void kvm_sys_reg_table_init(void)
 	unsigned int i;
 	struct sys_reg_desc clidr;
 
+	sys_reg_genericv8_init();
 	/* Make sure tables are unique and in order. */
 	BUG_ON(check_sysreg_table(sys_reg_descs, ARRAY_SIZE(sys_reg_descs)));
 	BUG_ON(check_sysreg_table(cp14_regs, ARRAY_SIZE(cp14_regs)));

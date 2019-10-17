@@ -127,4 +127,7 @@ bool access_vm_reg(struct kvm_vcpu *vcpu,
 		   const struct coproc_params *p,
 		   const struct coproc_reg *r);
 
+void coproc_a7_init(void);
+void coproc_a15_init(void);
+
 #endif /* __ARM_KVM_COPROC_LOCAL_H__ */

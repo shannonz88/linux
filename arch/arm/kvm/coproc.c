@@ -1404,6 +1404,9 @@ void kvm_coproc_table_init(void)
 {
 	unsigned int i;
 
+	coproc_a7_init();
+	coproc_a15_init();
+
 	/* Make sure tables are unique and in order. */
 	BUG_ON(check_reg_table(cp15_regs, ARRAY_SIZE(cp15_regs)));
 	BUG_ON(check_reg_table(invariant_cp15, ARRAY_SIZE(invariant_cp15)));
