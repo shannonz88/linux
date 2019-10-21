@@ -461,6 +461,7 @@ int __init arch_populate_kprobe_blacklist(void)
 		return ret;
 	ret = kprobe_add_area_blacklist((unsigned long)__idmap_text_start,
 					(unsigned long)__idmap_text_end);
+#if !defined(CONFIG_KVM_ARM_HOST_VHE_ONLY)
 	if (ret)
 		return ret;
 	ret = kprobe_add_area_blacklist((unsigned long)__hyp_text_start,
@@ -469,6 +470,7 @@ int __init arch_populate_kprobe_blacklist(void)
 		return ret;
 	ret = kprobe_add_area_blacklist((unsigned long)__hyp_idmap_text_start,
 					(unsigned long)__hyp_idmap_text_end);
+#endif
 	return ret;
 }
 

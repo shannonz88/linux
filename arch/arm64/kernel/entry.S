@@ -493,6 +493,7 @@ ENTRY(vectors)
 	kernel_ventry	0, error_invalid, 32		// Error 32-bit EL0
 #endif
 END(vectors)
+EXPORT_SYMBOL(vectors)
 
 #ifdef CONFIG_VMAP_STACK
 	/*

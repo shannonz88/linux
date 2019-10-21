@@ -288,3 +288,4 @@ int apei_claim_sea(struct pt_regs *regs)
 
 	return err;
 }
+EXPORT_SYMBOL(apei_claim_sea);

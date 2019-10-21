@@ -956,6 +956,7 @@ struct arch_timer_kvm_info *arch_timer_get_kvm_info(void)
 {
 	return &arch_timer_kvm_info;
 }
+EXPORT_SYMBOL(arch_timer_get_kvm_info);
 
 static void __init arch_counter_register(unsigned type)
 {

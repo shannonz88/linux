@@ -39,7 +39,9 @@
 #define NO_CONT_MAPPINGS	BIT(1)
 
 u64 idmap_t0sz = TCR_T0SZ(VA_BITS);
+EXPORT_SYMBOL(idmap_t0sz);
 u64 idmap_ptrs_per_pgd = PTRS_PER_PGD;
+EXPORT_SYMBOL(idmap_ptrs_per_pgd);
 
 u64 __section(".mmuoff.data.write") vabits_actual;
 EXPORT_SYMBOL(vabits_actual);
@@ -75,6 +77,8 @@ void set_swapper_pgd(pgd_t *pgdp, pgd_t pgd)
 	pgd_clear_fixmap();
 	spin_unlock(&swapper_pgdir_lock);
 }
+EXPORT_SYMBOL(set_swapper_pgd);
+EXPORT_SYMBOL(swapper_pg_dir);
 
 pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
 			      unsigned long size, pgprot_t vma_prot)

@@ -310,11 +310,7 @@ extern int __irq_set_affinity(unsigned int irq, const struct cpumask *cpumask,
  *
  * Fails if cpumask does not contain an online CPU
  */
-static inline int
-irq_set_affinity(unsigned int irq, const struct cpumask *cpumask)
-{
-	return __irq_set_affinity(irq, cpumask, false);
-}
+int irq_set_affinity(unsigned int irq, const struct cpumask *cpumask);
 
 /**
  * irq_force_affinity - Force the irq affinity of a given irq

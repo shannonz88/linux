@@ -72,6 +72,7 @@
  * specific registers encoded in the instructions).
  */
 .macro kern_hyp_va	reg
+#if !defined(CONFIG_KVM_ARM_HOST_VHE_ONLY)
 alternative_cb kvm_update_va_mask
 	and     \reg, \reg, #1		/* mask with va_mask */
 	ror	\reg, \reg, #1		/* rotate to the first tag bit */
@@ -79,6 +80,7 @@ alternative_cb kvm_update_va_mask
 	add	\reg, \reg, #0, lsl 12	/* insert the top 12 bits of the tag */
 	ror	\reg, \reg, #63		/* rotate back */
 alternative_cb_end
+#endif
 .endm
 
 #else
@@ -94,6 +96,7 @@ void kvm_update_va_mask(struct alt_instr *alt,
 
 static inline unsigned long __kern_hyp_va(unsigned long v)
 {
+#if !defined(CONFIG_KVM_ARM_HOST_VHE_ONLY)
 	asm volatile(ALTERNATIVE_CB("and %0, %0, #1\n"
 				    "ror %0, %0, #1\n"
 				    "add %0, %0, #0\n"
@@ -101,6 +104,7 @@ static inline unsigned long __kern_hyp_va(unsigned long v)
 				    "ror %0, %0, #63\n",
 				    kvm_update_va_mask)
 		     : "+r" (v));
+#endif
 	return v;
 }
 

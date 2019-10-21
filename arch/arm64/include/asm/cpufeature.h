@@ -625,16 +625,7 @@ int get_spectre_v2_workaround_state(void);
 #define ARM64_SSBD_FORCE_ENABLE		2
 #define ARM64_SSBD_MITIGATED		3
 
-static inline int arm64_get_ssbd_state(void)
-{
-#ifdef CONFIG_ARM64_SSBD
-	extern int ssbd_state;
-	return ssbd_state;
-#else
-	return ARM64_SSBD_UNKNOWN;
-#endif
-}
-
+int arm64_get_ssbd_state(void);
 void arm64_set_ssbd_mitigation(bool state);
 
 extern int do_emulate_mrs(struct pt_regs *regs, u32 sys_reg, u32 rt);

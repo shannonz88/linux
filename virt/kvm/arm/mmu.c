@@ -28,8 +28,10 @@ static pgd_t *merged_hyp_pgd;
 static DEFINE_MUTEX(kvm_hyp_pgd_mutex);
 
 static unsigned long hyp_idmap_start;
+#if !defined(CONFIG_KVM_ARM_HOST_VHE_ONLY)
 static unsigned long hyp_idmap_end;
 static phys_addr_t hyp_idmap_vector;
+#endif
 
 static unsigned long io_map_base;
 
@@ -2150,6 +2152,7 @@ phys_addr_t kvm_mmu_get_httbr(void)
 		return virt_to_phys(hyp_pgd);
 }
 
+#if !defined(CONFIG_KVM_ARM_HOST_VHE_ONLY)
 phys_addr_t kvm_get_idmap_vector(void)
 {
 	return hyp_idmap_vector;
@@ -2243,6 +2246,7 @@ out:
 	free_hyp_pgds();
 	return err;
 }
+#endif
 
 void kvm_arch_commit_memory_region(struct kvm *kvm,
 				   const struct kvm_userspace_memory_region *mem,

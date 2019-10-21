@@ -516,6 +516,16 @@ static inline int armv8pmu_enable_counter(int idx)
 	return idx;
 }
 
+static void (* kvm_set_pmu_events_ptr)(u32 set, struct perf_event_attr *attr) = NULL;
+static void (* kvm_clr_pmu_events_ptr)(u32 clr) = NULL;
+
+void perf_event_register_kvm_pmu_events_handler(void *set, void* clr)
+{
+	kvm_set_pmu_events_ptr = set;
+	kvm_clr_pmu_events_ptr = clr;
+}
+EXPORT_SYMBOL(perf_event_register_kvm_pmu_events_handler);
+
 static inline void armv8pmu_enable_event_counter(struct perf_event *event)
 {
 	struct perf_event_attr *attr = &event->attr;
@@ -525,7 +535,8 @@ static inline void armv8pmu_enable_event_counter(struct perf_event *event)
 	if (armv8pmu_event_is_chained(event))
 		counter_bits |= BIT(ARMV8_IDX_TO_COUNTER(idx - 1));
 
-	kvm_set_pmu_events(counter_bits, attr);
+	if (kvm_set_pmu_events_ptr)
+		(*kvm_set_pmu_events_ptr)(counter_bits, attr);
 
 	/* We rely on the hypervisor switch code to enable guest counters */
 	if (!kvm_pmu_counter_deferred(attr)) {
@@ -552,7 +563,8 @@ static inline void armv8pmu_disable_event_counter(struct perf_event *event)
 	if (armv8pmu_event_is_chained(event))
 		counter_bits |= BIT(ARMV8_IDX_TO_COUNTER(idx - 1));
 
-	kvm_clr_pmu_events(counter_bits);
+	if (kvm_clr_pmu_events_ptr)
+		(*kvm_clr_pmu_events_ptr)(counter_bits);
 
 	/* We rely on the hypervisor switch code to disable guest counters */
 	if (!kvm_pmu_counter_deferred(attr)) {
@@ -883,7 +895,8 @@ static void armv8pmu_reset(void *info)
 	}
 
 	/* Clear the counters we flip at guest entry/exit */
-	kvm_clr_pmu_events(U32_MAX);
+	if (kvm_clr_pmu_events_ptr)
+		kvm_clr_pmu_events_ptr(U32_MAX);
 
 	/*
 	 * Initialize & Reset PMNC. Request overflow interrupt for

@@ -127,10 +127,12 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
 	hdr->ttbr1_el1		= __pa_symbol(swapper_pg_dir);
 	hdr->reenter_kernel	= _cpu_resume;
 
+#if !defined(CONFIG_KVM_ARM_HOST_VHE_ONLY)
 	/* We can't use __hyp_get_vectors() because kvm may still be loaded */
 	if (el2_reset_needed())
 		hdr->__hyp_stub_vectors = __pa_symbol(__hyp_stub_vectors);
 	else
+#endif
 		hdr->__hyp_stub_vectors = 0;
 
 	/* Save the mpidr of the cpu we called cpu_suspend() on... */
@@ -304,11 +306,13 @@ int swsusp_arch_suspend(void)
 		dcache_clean_range(__mmuoff_data_start, __mmuoff_data_end);
 		dcache_clean_range(__idmap_text_start, __idmap_text_end);
 
+#if !defined(CONFIG_KVM_ARM_HOST_VHE_ONLY)
 		/* Clean kvm setup code to PoC? */
 		if (el2_reset_needed()) {
 			dcache_clean_range(__hyp_idmap_text_start, __hyp_idmap_text_end);
 			dcache_clean_range(__hyp_text_start, __hyp_text_end);
 		}
+#endif
 
 		/* make the crash dump kernel image protected again */
 		crash_post_resume();
@@ -549,6 +553,7 @@ int swsusp_arch_resume(void)
 	 *
 	 * We can skip this step if we booted at EL1, or are running with VHE.
 	 */
+#if !defined(CONFIG_KVM_ARM_HOST_VHE_ONLY)
 	if (el2_reset_needed()) {
 		phys_addr_t el2_vectors = phys_hibernate_exit;  /* base */
 		el2_vectors += hibernate_el2_vectors -
@@ -556,6 +561,7 @@ int swsusp_arch_resume(void)
 
 		__hyp_set_vectors(el2_vectors);
 	}
+#endif
 
 	hibernate_exit(virt_to_phys(tmp_pg_dir), resume_hdr.ttbr1_el1,
 		       resume_hdr.reenter_kernel, restore_pblist,

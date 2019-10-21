@@ -57,21 +57,9 @@
 
 #define ICACHEF_ALIASING	0
 #define ICACHEF_VPIPT		1
-extern unsigned long __icache_flags;
 
-/*
- * Whilst the D-side always behaves as PIPT on AArch64, aliasing is
- * permitted in the I-cache.
- */
-static inline int icache_is_aliasing(void)
-{
-	return test_bit(ICACHEF_ALIASING, &__icache_flags);
-}
-
-static inline int icache_is_vpipt(void)
-{
-	return test_bit(ICACHEF_VPIPT, &__icache_flags);
-}
+int icache_is_aliasing(void);
+int icache_is_vpipt(void);
 
 static inline u32 cache_type_cwg(void)
 {

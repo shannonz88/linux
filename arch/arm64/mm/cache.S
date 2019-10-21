@@ -95,6 +95,7 @@ alternative_else_nop_endif
 	mov	x0, #-EFAULT
 	b	1b
 ENDPROC(invalidate_icache_range)
+EXPORT_SYMBOL(invalidate_icache_range)
 
 /*
  *	__flush_dcache_area(kaddr, size)
@@ -109,6 +110,7 @@ ENTRY(__flush_dcache_area)
 	dcache_by_line_op civac, sy, x0, x1, x2, x3
 	ret
 ENDPIPROC(__flush_dcache_area)
+EXPORT_SYMBOL(__flush_dcache_area)
 
 /*
  *	__clean_dcache_area_pou(kaddr, size)

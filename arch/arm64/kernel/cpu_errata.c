@@ -267,8 +267,19 @@ static int detect_harden_bp_fw(void)
 }
 
 DEFINE_PER_CPU_READ_MOSTLY(u64, arm64_ssbd_callback_required);
+EXPORT_SYMBOL(arm64_ssbd_callback_required);
 
 int ssbd_state __read_mostly = ARM64_SSBD_KERNEL;
+int arm64_get_ssbd_state(void)
+{
+#ifdef CONFIG_ARM64_SSBD
+	return ssbd_state;
+#else
+	return ARM64_SSBD_UNKNOWN;
+#endif
+}
+EXPORT_SYMBOL(arm64_get_ssbd_state);
+
 static bool __ssb_safe = true;
 
 static const struct ssbd_options {
@@ -323,7 +334,7 @@ void __init arm64_update_smccc_conduit(struct alt_instr *alt,
 	*updptr = cpu_to_le32(insn);
 }
 
-void __init arm64_enable_wa2_handling(struct alt_instr *alt,
+void arm64_enable_wa2_handling(struct alt_instr *alt,
 				      __le32 *origptr, __le32 *updptr,
 				      int nr_inst)
 {
@@ -336,6 +347,7 @@ void __init arm64_enable_wa2_handling(struct alt_instr *alt,
 	if (arm64_get_ssbd_state() == ARM64_SSBD_KERNEL)
 		*updptr = cpu_to_le32(aarch64_insn_gen_nop());
 }
+EXPORT_SYMBOL(arm64_enable_wa2_handling);
 
 void arm64_set_ssbd_mitigation(bool state)
 {
@@ -565,6 +577,7 @@ int get_spectre_v2_workaround_state(void)
 
 	return ARM64_BP_HARDEN_WA_NEEDED;
 }
+EXPORT_SYMBOL(get_spectre_v2_workaround_state);
 
 /*
  * List of CPUs that do not need any Spectre-v2 mitigation at all.

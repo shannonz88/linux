@@ -772,6 +772,7 @@ const char *esr_get_class_string(u32 esr)
 {
 	return esr_class_str[ESR_ELx_EC(esr)];
 }
+EXPORT_SYMBOL(esr_get_class_string);
 
 /*
  * bad_mode handles the impossible case in the exception vector. This is always
@@ -887,6 +888,7 @@ bool arm64_is_fatal_ras_serror(struct pt_regs *regs, unsigned int esr)
 		arm64_serror_panic(regs, esr);
 	}
 }
+EXPORT_SYMBOL(arm64_is_fatal_ras_serror);
 
 asmlinkage void do_serror(struct pt_regs *regs, unsigned int esr)
 {

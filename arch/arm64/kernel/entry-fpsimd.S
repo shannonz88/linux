@@ -36,11 +36,13 @@ ENTRY(sve_save_state)
 	sve_save 0, x1, 2
 	ret
 ENDPROC(sve_save_state)
+EXPORT_SYMBOL(sve_save_state)
 
 ENTRY(sve_load_state)
 	sve_load 0, x1, x2, 3, x4
 	ret
 ENDPROC(sve_load_state)
+EXPORT_SYMBOL(sve_load_state)
 
 ENTRY(sve_get_vl)
 	_sve_rdvl	0, 1

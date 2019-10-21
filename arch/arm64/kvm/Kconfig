@@ -18,7 +18,7 @@ menuconfig VIRTUALIZATION
 
 if VIRTUALIZATION
 
-config KVM
+menuconfig KVM
 	bool "Kernel-based Virtual Machine (KVM) support"
 	depends on OF
 	select MMU_NOTIFIER
@@ -26,13 +26,11 @@ config KVM
 	select HAVE_KVM_CPU_RELAX_INTERCEPT
 	select HAVE_KVM_ARCH_TLB_FLUSH_ALL
 	select KVM_MMIO
-	select KVM_ARM_HOST
 	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
 	select SRCU
 	select KVM_VFIO
 	select HAVE_KVM_EVENTFD
 	select HAVE_KVM_IRQFD
-	select KVM_ARM_PMU if HW_PERF_EVENTS
 	select HAVE_KVM_MSI
 	select HAVE_KVM_IRQCHIP
 	select HAVE_KVM_IRQ_ROUTING
@@ -45,11 +43,22 @@ config KVM
 	  levels of fake page tables.
 
 	  If unsure, say N.
+if KVM
 
 config KVM_ARM_HOST
-	bool
+	tristate "KVM support for ARM64"
+	select KVM_ARM_HOST_VHE_ONLY if KVM_ARM_HOST=m
+	select KVM_ARM_PMU if HW_PERF_EVENTS
+	default y
 	---help---
 	  Provides host support for ARM processors.
+	  To compile this as a module, choose M here: the module
+	  will be called kvm. Note it only works for VHE platform.
+
+config KVM_ARM_HOST_VHE_ONLY
+	bool
+	depends on KVM_ARM_HOST=m
+	default n
 
 config KVM_ARM_PMU
 	bool
@@ -59,6 +68,8 @@ config KVM_ARM_PMU
 
 config KVM_INDIRECT_VECTORS
        def_bool KVM && (HARDEN_BRANCH_PREDICTOR || HARDEN_EL2_VECTORS)
+
+endif # KVM
 
 source "drivers/vhost/Kconfig"
 

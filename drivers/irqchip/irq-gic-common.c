@@ -18,6 +18,7 @@ const struct gic_kvm_info *gic_get_kvm_info(void)
 {
 	return gic_kvm_info;
 }
+EXPORT_SYMBOL(gic_get_kvm_info);
 
 void gic_set_kvm_info(const struct gic_kvm_info *info)
 {
